@@ -15,25 +15,33 @@ interface ActionRequestResponse {
   }
 }
 
-const URL = "https://saleor.box.witoszek.dev";
-
 function getResponse(type: string, amount: string): ActionRequestResponse {
-  return {
-    pspReference: `${type}-1234`,
-  }
+  // Uncomment for reporting without status update
   // return {
-  //     pspReference: `${type}-1234`,
-  //     event: {
-  //       type,
-  //       amount,
-  //       message: "Example created by dummy server"
-  //     }
+  //   pspReference: `${type}-1234`,
   // }
+  return {
+      pspReference: `${type}-1234`,
+      event: {
+        type,
+        amount,
+        message: "Example created by dummy server"
+      }
+  }
+}
+
+function getUrl(req: Request) {
+  const domain = req.headers.get("host");
+  if (domain) {
+    return `https://${domain}`;
+  }
+  return "http://localhost:5544"
 }
 
 const routes = [
 	GET('/', () => Response.OK('Hello, Root')),
-  GET("/manifest", () => {
+  GET("/manifest", (req) => {
+    const URL = getUrl(req);
     return Response.OK({
       id: "witoszekdev.dummy-payment-app",
       name: "Dummy Payment App",
