@@ -2,7 +2,13 @@ import { serve } from "wren/mod.ts";
 import { GET, POST } from "wren/route.ts";
 import * as Response from "wren/response.ts";
 import { AppManifest } from "./types.ts";
-import { cancelSub, chargeSub, refundSub } from "./subscriptions.ts";
+import {
+  cancelSub,
+  chargeSub,
+  gatewayInitialize,
+  refundSub,
+  transactionInitialize,
+} from "./subscriptions.ts";
 
 interface ActionRequestResponse {
   pspReference: string;
@@ -51,6 +57,18 @@ const routes = [
       tokenTargetUrl: `${URL}/install`,
       webhooks: [
         {
+          name: "Gateway Initialize",
+          targetUrl: `${URL}/gateway-initialize`,
+          query: gatewayInitialize,
+          syncEvents: ["PAYMENT_GATEWAY_INITIALIZE_SESSION"],
+        },
+        {
+          name: "Transaction Initialize",
+          targetUrl: `${URL}/transaction-initialize`,
+          query: transactionInitialize,
+          syncEvents: ["TRANSACTION_INITIALIZE_SESSION"],
+        },
+        {
           name: "Charge Request",
           targetUrl: `${URL}/transaction-charge-requested`,
           query: chargeSub,
@@ -83,6 +101,27 @@ const routes = [
     console.log("install", json);
     return Response.OK({
       success: true,
+    });
+  }),
+  POST("/gateway-initialize", async (req: Request) => {
+    const json = await req.json();
+    console.log("gateway initialize", json);
+    console.log("headers", req.headers);
+    return Response.OK({
+      data: {
+        some: "data",
+      },
+    });
+  }),
+  POST("/transaction-initialize", async (req: Request) => {
+    const json = await req.json();
+    console.log("transaction initialize", json);
+    console.log("headers", req.headers);
+    const amount = json.action.amount;
+    return Response.OK({
+      pspReference: "initialize-test",
+      result: "CHARGE_SUCCESS",
+      amount,
     });
   }),
   POST("/transaction-charge-requested", async (req: Request) => {

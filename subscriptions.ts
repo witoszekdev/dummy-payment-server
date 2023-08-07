@@ -1,3 +1,58 @@
+export const gatewayInitialize = `subscription {
+  event {
+    ... on PaymentGatewayInitializeSession {
+      issuedAt
+      version
+      issuingPrincipal {
+        ... on Node {
+          id
+        }
+        __typename
+      }
+      recipient {
+        id
+        name
+      }
+      sourceObject {
+        __typename
+      }
+      data
+      amount
+    }
+  }
+}`;
+
+export const transactionInitialize = `subscription {
+  event {
+    ... on TransactionInitializeSession {
+      issuedAt
+      version
+      issuingPrincipal {
+        ... on Node {
+          id
+        }
+        __typename
+      }
+      recipient {
+        id
+        name
+      }
+      transaction {
+        id
+        name
+        pspReference
+      }
+      data
+      merchantReference
+      action {
+        amount
+        currency
+        actionType
+      }
+    }
+  }
+}`
+
 export const chargeSub = `subscription {
   event {
     ... on TransactionChargeRequested {
@@ -20,7 +75,7 @@ export const chargeSub = `subscription {
     }
   }
 }
-`
+`;
 
 export const refundSub = `subscription {
   event {
@@ -43,7 +98,7 @@ export const refundSub = `subscription {
       }
     }
   }
-}`
+}`;
 
 export const cancelSub = `subscription {
   event {
@@ -66,4 +121,4 @@ export const cancelSub = `subscription {
       }
     }
   }
-}`
+}`;
