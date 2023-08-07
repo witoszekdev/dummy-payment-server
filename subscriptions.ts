@@ -132,7 +132,11 @@ subscription {
       }
       data
       merchantReference
-      action
+      action {
+        amount
+        currency
+        actionType
+      }
     }
   }
 }`;
