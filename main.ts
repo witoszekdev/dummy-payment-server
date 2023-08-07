@@ -127,7 +127,9 @@ const routes = [
     const action = json.action.actionType ?? "CHARGE";
     return Response.OK({
       pspReference: "initialize-test",
-      result: json?.data?.final ? `${action}_SUCCESS` : `${action}_REQUEST`,
+      result: json?.data?.final
+        ? `${action}_SUCCESS`
+        : `${action}_ACTION_REQUIRED`,
       amount,
     });
   }),
