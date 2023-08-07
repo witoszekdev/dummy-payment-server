@@ -53,7 +53,7 @@ const routes = [
       name: "Dummy Payment App",
       appUrl: URL,
       version: "1.0.0",
-      permissions: ["HANDLE_PAYMENTS", "HANDLE_CHECKOUTS", "MANAGE_ORDERS"],
+      permissions: ["HANDLE_PAYMENTS", "HANDLE_CHECKOUTS", "MANAGE_ORDERS", "MANAGE_USERS"],
       tokenTargetUrl: `${URL}/install`,
       webhooks: [
         {
