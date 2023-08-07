@@ -46,6 +46,12 @@ For example, if your tunnel URL is `https://happy-tunnel.com` then the manifest 
 
 After installation `auth_token` will be visible in the console. It is also stored inside `.token` file.
 
+## Deployment
+
+Fork this project
+
+Use [Deno Deploy](https://dash.deno.com/projects) to deploy your forked repository.
+
 ## Example usage
 
 The app id is `witoszekdev.dummy-payment-app`.
