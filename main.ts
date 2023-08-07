@@ -124,9 +124,10 @@ const routes = [
     console.log("transaction initialize", json);
     console.log("headers", req.headers);
     const amount = json.action.amount;
+    const action = json.action.actionType ?? "CHARGE";
     return Response.OK({
       pspReference: "initialize-test",
-      result: json?.data?.final ? "CHARGE_SUCCESS" : "CHARGE_REQUEST",
+      result: json?.data?.final ? `${action}_SUCCESS` : `${action}_REQUEST`,
       amount,
     });
   }),
@@ -135,9 +136,10 @@ const routes = [
     console.log("transaction process", json);
     console.log("headers", req.headers);
     const amount = json.action.amount;
+    const action = json.action.actionType ?? "CHARGE";
     return Response.OK({
       pspReference: "initialize-test",
-      result: json?.data?.final ? "CHARGE_SUCCESS" : "CHARGE_REQUEST",
+      result: json?.data?.final ? `${action}_SUCCESS` : `${action}_REQUEST`,
       amount,
     });
   }),
