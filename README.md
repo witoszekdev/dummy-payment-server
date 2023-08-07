@@ -18,6 +18,9 @@ deno task start
 
 ### Tunnel
 
+> **Note**
+> Before you go ahead and start your app locally, give Deno Deploy a try! It takes a ~2 seconds to deploy the app after you push the changes to the repository 😉
+
 Create a tunnel, to make your app accessible from Internet. You can use [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/install-and-setup/tunnel-guide/local/):
 
 ```
@@ -30,7 +33,7 @@ or by using ngrook:
 ngrok http 5544
 ```
 
-> _Note_
+> **Note**
 > Saleor CLI's tunnel doesn't work with Deno
 
 ### Install app
