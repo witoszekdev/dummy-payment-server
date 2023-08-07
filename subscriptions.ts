@@ -83,11 +83,9 @@ export const transactionInitialize = `subscription {
   }
 }`;
 
-export const transactionProcess = `fragment Money {
-  ... on Money {
-    currency
-    amount
-  }
+export const transactionProcess = `fragment Money on Money {
+  currency
+  amount
 }
 
 subscription {
