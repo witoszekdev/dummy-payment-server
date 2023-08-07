@@ -14,7 +14,16 @@ export const gatewayInitialize = `subscription {
         name
       }
       sourceObject {
-        __typename
+        ... on Checkout {
+          user {
+            id
+          }
+        }
+        ...on Order {
+          user {
+            id
+          }
+        }
       }
       data
       amount
@@ -37,6 +46,19 @@ export const transactionInitialize = `subscription {
         id
         name
       }
+      sourceObject {
+        ... on Checkout {
+          user {
+            id
+          }
+        }
+        ...on Order {
+          user {
+            id
+          }
+        }
+        __typename
+      }
       transaction {
         id
         name
@@ -51,7 +73,7 @@ export const transactionInitialize = `subscription {
       }
     }
   }
-}`
+}`;
 
 export const chargeSub = `subscription {
   event {
