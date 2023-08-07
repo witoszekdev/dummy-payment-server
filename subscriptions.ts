@@ -83,6 +83,62 @@ export const transactionInitialize = `subscription {
   }
 }`;
 
+export const transactionProcess = `fragment Money {
+  ... on Money {
+    currency
+    amount
+  }
+}
+
+subscription {
+  event {
+    ... on TransactionProcessSession {
+      issuedAt
+      version
+      issuingPrincipal {
+        ... on User {
+          id
+          lastName
+          firstName
+        }
+        ... on App {
+          id
+          name
+        }
+        __typename
+      }
+      recipient {
+        id
+        name
+      }
+      sourceObject {
+        ... on Checkout {
+          id
+          totalPrice {
+            currency
+            gross {
+              ...Money
+            }
+          }
+        }
+        ... on Order {
+          id
+          total {
+            currency
+            gross {
+              ...Money
+            }
+          }
+        }
+        __typename
+      }
+      data
+      merchantReference
+      action
+    }
+  }
+}`;
+
 export const chargeSub = `subscription {
   event {
     ... on TransactionChargeRequested {

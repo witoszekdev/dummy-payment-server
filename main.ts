@@ -8,6 +8,7 @@ import {
   gatewayInitialize,
   refundSub,
   transactionInitialize,
+  transactionProcess,
 } from "./subscriptions.ts";
 
 interface ActionRequestResponse {
@@ -74,6 +75,12 @@ const routes = [
           syncEvents: ["TRANSACTION_INITIALIZE_SESSION"],
         },
         {
+          name: "Transaction Process",
+          targetUrl: `${URL}/transaction-process`,
+          query: transactionProcess,
+          syncEvents: ["TRANSACTION_PROCESS_SESSION"],
+        },
+        {
           name: "Charge Request",
           targetUrl: `${URL}/transaction-charge-requested`,
           query: chargeSub,
@@ -91,12 +98,6 @@ const routes = [
           query: cancelSub,
           syncEvents: ["TRANSACTION_CANCELATION_REQUESTED"],
         },
-        // {
-        //   name: "Action request async",
-        //   targetUrl: `${URL}/transaction-action-request`,
-        //   isActive: true,
-        //   asyncEvents: ["TRANSACTION_ACTION_REQUEST"]
-        // }
       ],
     } satisfies AppManifest);
   }),
@@ -125,7 +126,18 @@ const routes = [
     const amount = json.action.amount;
     return Response.OK({
       pspReference: "initialize-test",
-      result: "CHARGE_SUCCESS",
+      result: json?.data?.final ? "CHARGE_SUCCESS" : "CHARGE_REQUEST",
+      amount,
+    });
+  }),
+  POST("/transaction-process", async (req: Request) => {
+    const json = await req.json();
+    console.log("transaction process", json);
+    console.log("headers", req.headers);
+    const amount = json.action.amount;
+    return Response.OK({
+      pspReference: "initialize-test",
+      result: json?.data?.final ? "CHARGE_SUCCESS" : "CHARGE_REQUEST",
       amount,
     });
   }),
