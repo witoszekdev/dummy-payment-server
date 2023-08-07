@@ -4,10 +4,18 @@ export const gatewayInitialize = `subscription {
       issuedAt
       version
       issuingPrincipal {
+        ... on App {
+          id
+          __typename
+        }
+        ... on User {
+          id
+          __typename
+        }
         ... on Node {
           id
+          __typename
         }
-        __typename
       }
       recipient {
         id
