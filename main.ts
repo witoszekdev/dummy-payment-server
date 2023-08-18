@@ -24,6 +24,12 @@ import * as log from "log/mod.ts";
 
 const apl = new DenoAPL();
 
+interface TransactionRequestResponse {
+  pspReference: string;
+  result: string;
+  amount: string;
+}
+
 interface ActionRequestResponse {
   pspReference: string;
   event?: {
@@ -35,19 +41,95 @@ interface ActionRequestResponse {
   };
 }
 
-function getResponse(type: string, amount: string): ActionRequestResponse {
-  // Uncomment for reporting without status update
-  // return {
-  //   pspReference: `${type}-1234`,
-  // }
-  return {
-    pspReference: `${type}-1234`,
+async function getTransactionResponse(
+  req: Request,
+  logger: log.Logger
+): Promise<Response> {
+  const json = await req.json();
+  const amount = json.action.amount;
+  const action = json.action.actionType ?? "CHARGE";
+  const saleorApiUrl = req.headers.get(SALEOR_API_URL_HEADER);
+  const data = json?.data;
+
+  logger.info("Request", {
+    amount,
+    action,
+    saleorApiUrl,
+    data,
+  });
+
+  logger.debug("Request details", {
+    headers: req.headers,
+    body: req.body,
+  });
+
+  if (!amount || !action || !saleorApiUrl) {
+    logger.error("Missing parameter");
+    return Response.BadRequest({
+      message: "Missing params",
+    });
+  }
+
+  return Response.OK({
+    pspReference: "initialize-test",
+    result: `${action}_SUCCESS`,
+    amount,
+    ...data,
+  } satisfies TransactionRequestResponse);
+}
+
+async function getActionResponse(
+  req: Request,
+  logger: log.Logger
+): Promise<Response> {
+  const json = await req.json();
+  const amount = json.action.amount;
+  const action = json.action.actionType;
+  const saleorApiUrl = req.headers.get(SALEOR_API_URL_HEADER);
+  const data = json.data;
+
+  logger.info("Transaction action request", {
+    amount,
+    action,
+    saleorApiUrl,
+    data,
+  });
+
+  logger.debug("Request details", {
+    headers: req.headers,
+    body: req.body,
+  });
+
+  if (!action) {
+    logger.error("Missing action in request");
+    return Response.BadRequest({
+      event: {
+        message: "Missing action",
+      },
+    });
+  }
+
+  if (!amount || !saleorApiUrl) {
+    logger.error("Missing amount or saleorApiUrl");
+    return Response.BadRequest({
+      pspReference: `${action}-1234`,
+      event: {
+        type: `${action}_FAILURE`,
+        message: "Missing params",
+      },
+    });
+  }
+
+  return Response.OK({
+    pspReference: `${action}-1234`,
+    ...data,
     event: {
-      type,
+      type: `${action}_SUCCESS`,
       amount,
       message: "Example created by dummy server",
+      ...data?.event,
     },
-  };
+  } satisfies ActionRequestResponse);
 }
 
 function getUrl(req: Request) {
@@ -179,9 +261,16 @@ const routes = [
     });
   }),
   POST("/gateway-initialize", async (req: Request) => {
+    const logger = log.getLogger("gateway-initialize");
     const json = await req.json();
-    console.log("/gateway-initialize - json", json);
-    console.log("/gateway-initialize - headers", req.headers);
+
+    logger.info("Request", json);
+    logger.debug("Request details", { body: req.body, headers: req.headers });
+
+    if (json?.data) {
+      return json.data;
+    }
+
     return Response.OK({
       data: {
         some: "data",
@@ -189,53 +278,37 @@ const routes = [
     });
   }),
   POST("/transaction-initialize", async (req: Request) => {
-    const json = await req.json();
-    console.log("transaction initialize", json);
-    console.log("headers", req.headers);
-    const amount = json.action.amount;
-    const action = json.action.actionType ?? "CHARGE";
-    return Response.OK({
-      pspReference: "initialize-test",
-      result: json?.data?.final
-        ? `${action}_SUCCESS`
-        : `${action}_ACTION_REQUIRED`,
-      amount,
-    });
+    const logger = log.getLogger("transaction-initialize");
+
+    return await getTransactionResponse(req, logger);
   }),
   POST("/transaction-process", async (req: Request) => {
-    const json = await req.json();
-    console.log("transaction process", json);
-    console.log("headers", req.headers);
-    const amount = json.action.amount;
-    const action = json.action.actionType ?? "CHARGE";
-    return Response.OK({
-      pspReference: "initialize-test",
-      result: json?.data?.final ? `${action}_SUCCESS` : `${action}_REQUEST`,
-      amount,
-    });
+    const logger = log.getLogger("transaction-process");
+
+    return await getTransactionResponse(req, logger);
   }),
   POST("/transaction-charge-requested", async (req: Request) => {
-    const json = await req.json();
-    console.log("charge request", json);
-    console.log("headers", req.headers);
-    const amount = json.action.amount;
-    return Response.OK(getResponse("CHARGE_SUCCESS", amount));
+    const logger = log.getLogger("transaction-charge-requested");
+
+    return await getActionResponse(req, logger);
   }),
   POST("/transaction-refund-requested", async (req) => {
-    const json = await req.json();
-    console.log("refund request", json);
-    const amount = json.action.amount;
-    return Response.OK(getResponse("REFUND_SUCCESS", amount));
+    const logger = log.getLogger("transaction-refund-requested");
+
+    return await getActionResponse(req, logger);
   }),
   POST("/transaction-cancelation-requested", async (req) => {
-    const json = await req.json();
-    console.log("cancel request", json);
-    const amount = json.action.amount;
-    return Response.OK(getResponse("CANCEL_SUCCESS", amount));
+    const logger = log.getLogger("transaction-cancelation-requested");
+
+    return await getActionResponse(req, logger);
   }),
   POST("/transaction-action-request", async (req) => {
+    const logger = log.getLogger("transaction-action-request");
+
     const json = await req.json();
-    console.log("received old async event", json);
+    logger.info("Request", json);
+    logger.debug("Request details", { body: req.body, headers: req.headers });
+
     return Response.OK("Accepted");
   }),
 ];
