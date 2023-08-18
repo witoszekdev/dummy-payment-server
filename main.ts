@@ -1,3 +1,5 @@
+/// <reference lib="deno.unstable" />
+
 import { serve } from "wren/mod.ts";
 import { GET, POST } from "wren/route.ts";
 import * as Response from "wren/response.ts";
@@ -10,6 +12,15 @@ import {
   transactionInitialize,
   transactionProcess,
 } from "./subscriptions.ts";
+import {
+  SALEOR_DOMAIN_HEADER,
+  SALEOR_API_URL_HEADER,
+} from "npm:@saleor/app-sdk@0.43.0/const";
+import { DenoAPL } from "./deno-apl.ts";
+import { fetchRemoteJwks, getAppId } from "./utils.ts";
+import { AuthData } from "npm:@saleor/app-sdk@0.43.0/APL";
+
+const apl = new DenoAPL();
 
 interface ActionRequestResponse {
   pspReference: string;
@@ -102,17 +113,61 @@ const routes = [
     } satisfies AppManifest);
   }),
   POST("/install", async (req) => {
-    console.log("install");
     const json = await req.json();
-    console.log("install", json);
+    const authToken = json.auth_token;
+    const saleorDomain = req.headers.get(SALEOR_DOMAIN_HEADER);
+    const saleorApiUrl = req.headers.get(SALEOR_API_URL_HEADER);
+
+    if (!authToken || !saleorDomain || !saleorApiUrl) {
+      return Response.BadRequest({
+        code: "MISSING_HEADER",
+        message: "One of requried headers is missing",
+      });
+    }
+
+    const appId = await getAppId({ saleorApiUrl, token: authToken });
+
+    if (!appId) {
+      return Response.BadRequest({
+        code: "UNKNOWN_APP_ID",
+        message: `The auth data given during registration request could not be used to fetch app ID. 
+          This usually means that App could not connect to Saleor during installation. Saleor URL that App tried to connect: ${saleorApiUrl}`,
+      });
+    }
+
+    const jwks = await fetchRemoteJwks(saleorApiUrl);
+    if (!jwks) {
+      return Response.BadRequest({
+        code: "JWKS_NOT_AVAILABLE",
+        message: "Can't fetch the remote JWKS.",
+      });
+    }
+
+    const authData: AuthData = {
+      domain: saleorDomain,
+      token: authToken,
+      saleorApiUrl,
+      appId,
+      jwks,
+    };
+
+    try {
+      apl.set(authData);
+    } catch (_e) {
+      return Response.InternalServerError({
+        code: "APL_SAVE_ERROR",
+        message: "Cannot save APL",
+      });
+    }
+
     return Response.OK({
       success: true,
     });
   }),
   POST("/gateway-initialize", async (req: Request) => {
     const json = await req.json();
-    console.log("gateway initialize", json);
-    console.log("headers", req.headers);
+    console.log("/gateway-initialize - json", json);
+    console.log("/gateway-initialize - headers", req.headers);
     return Response.OK({
       data: {
         some: "data",
