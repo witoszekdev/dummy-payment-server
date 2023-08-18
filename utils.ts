@@ -1,3 +1,4 @@
+import { ASTNode, print } from "graphql/mod.ts";
 import { getJwksUrlFromSaleorApiUrl } from "npm:@saleor/app-sdk@0.43.0/urls";
 
 export const fetchRemoteJwks = async (saleorApiUrl: string) => {
@@ -56,3 +57,10 @@ export const getAppId = async ({
 
 export const isDenoDeploy: boolean =
   Deno.env.get("DENO_DEPLOYMENT_ID") !== undefined;
+
+export const astToString = (ast: ASTNode): string => {
+  return print(ast) // convert AST to string
+    .replaceAll(/\n*/g, "") // remove new lines
+    .replaceAll(/\s{2,}/g, " ") // remove unnecessary multiple spaces
+    .trim(); // remove whitespace from beginning and end
+};

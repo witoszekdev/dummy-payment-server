@@ -1,0 +1,2 @@
+schema: ${SALEOR_API_URL:"https://demo.saleor.io/graphql/"}
+documents: [./**/*.graphql, ./**/*.ts, ./**/*.tsx]

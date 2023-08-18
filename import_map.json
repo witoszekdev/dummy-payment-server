@@ -2,6 +2,9 @@
   "imports": {
     "http/": "https://deno.land/std@0.160.0/http/",
     "log/": "https://deno.land/std@0.198.0/log/",
-    "wren/": "https://deno.land/x/wren@0.8.0/"
+    "wren/": "https://deno.land/x/wren@0.8.0/",
+    "graphql_request/": "https://deno.land/x/graphql_request@v4.1.0/",
+    "graphql/": "https://deno.land/x/graphql_deno@v15.0.0/",
+    "graphql_tag/": "https://deno.land/x/graphql_tag@0.1.2/"
   }
 }

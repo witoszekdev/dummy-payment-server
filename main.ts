@@ -17,7 +17,7 @@ import {
   SALEOR_API_URL_HEADER,
 } from "npm:@saleor/app-sdk@0.43.0/const";
 import { DenoAPL } from "./deno-apl.ts";
-import { fetchRemoteJwks, getAppId } from "./utils.ts";
+import { astToString, fetchRemoteJwks, getAppId } from "./utils.ts";
 import { AuthData } from "npm:@saleor/app-sdk@0.43.0/APL";
 import "./logger.ts";
 import * as log from "log/mod.ts";
@@ -81,37 +81,37 @@ const routes = [
         {
           name: "Gateway Initialize",
           targetUrl: `${URL}/gateway-initialize`,
-          query: gatewayInitialize,
+          query: astToString(gatewayInitialize),
           syncEvents: ["PAYMENT_GATEWAY_INITIALIZE_SESSION"],
         },
         {
           name: "Transaction Initialize",
           targetUrl: `${URL}/transaction-initialize`,
-          query: transactionInitialize,
+          query: astToString(transactionInitialize),
           syncEvents: ["TRANSACTION_INITIALIZE_SESSION"],
         },
         {
           name: "Transaction Process",
           targetUrl: `${URL}/transaction-process`,
-          query: transactionProcess,
+          query: astToString(transactionProcess),
           syncEvents: ["TRANSACTION_PROCESS_SESSION"],
         },
         {
           name: "Charge Request",
           targetUrl: `${URL}/transaction-charge-requested`,
-          query: chargeSub,
+          query: astToString(chargeSub),
           syncEvents: ["TRANSACTION_CHARGE_REQUESTED"],
         },
         {
           name: "Refund Request",
           targetUrl: `${URL}/transaction-refund-requested`,
-          query: refundSub,
+          query: astToString(refundSub),
           syncEvents: ["TRANSACTION_REFUND_REQUESTED"],
         },
         {
           name: "Cancel Request",
           targetUrl: `${URL}/transaction-cancelation-requested`,
-          query: cancelSub,
+          query: astToString(cancelSub),
           syncEvents: ["TRANSACTION_CANCELATION_REQUESTED"],
         },
       ],
