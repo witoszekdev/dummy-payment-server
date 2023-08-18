@@ -3,7 +3,7 @@ import {
   AuthData,
   AplReadyResult,
   AplConfiguredResult,
-} from "npm:@saleor/app-sdk@0.43.0/APL";
+} from "saleor-app-sdk/APL";
 
 const kv = await Deno.openKv();
 

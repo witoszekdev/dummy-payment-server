@@ -5,6 +5,7 @@
     "wren/": "https://deno.land/x/wren@0.8.0/",
     "graphql_request/": "https://deno.land/x/graphql_request@v4.1.0/",
     "graphql/": "https://deno.land/x/graphql_deno@v15.0.0/",
-    "graphql_tag/": "https://deno.land/x/graphql_tag@0.1.2/"
+    "graphql_tag/": "https://deno.land/x/graphql_tag@0.1.2/",
+    "saleor-app-sdk/": "https://esm.sh/@saleor/app-sdk@0.43.0/"
   }
 }
