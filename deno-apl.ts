@@ -37,12 +37,14 @@ export class DenoAPL implements APL {
     return authDataList;
   }
 
+  // deno-lint-ignore require-await
   async isReady(): Promise<AplReadyResult> {
     return {
       ready: true,
     };
   }
 
+  // deno-lint-ignore require-await
   async isConfigured(): Promise<AplConfiguredResult> {
     return {
       configured: true,
