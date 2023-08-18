@@ -175,3 +175,9 @@ Variables:
   "transactionId": "<transaction id from transactionInitialzie>"
 }
 ```
+
+## TODO
+
+- `transactionEventReport` endpoint
+- CLI for getting app auth data
+- Add nice splash screen that renders README
