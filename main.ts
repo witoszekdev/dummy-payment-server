@@ -15,10 +15,10 @@ import {
 import {
   SALEOR_DOMAIN_HEADER,
   SALEOR_API_URL_HEADER,
-} from "npm:@saleor/app-sdk@0.43.0/const";
+} from "saleor-app-sdk/const";
 import { DenoAPL } from "./deno-apl.ts";
 import { astToString, fetchRemoteJwks, getAppId } from "./utils.ts";
-import { AuthData } from "npm:@saleor/app-sdk@0.43.0/APL";
+import { AuthData } from "saleor-app-sdk/APL";
 import "./logger.ts";
 import * as log from "log/mod.ts";
 

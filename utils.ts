@@ -1,5 +1,5 @@
 import { ASTNode, print } from "graphql/mod.ts";
-import { getJwksUrlFromSaleorApiUrl } from "npm:@saleor/app-sdk@0.43.0/urls";
+import { getJwksUrlFromSaleorApiUrl } from "saleor-app-sdk/urls";
 
 export const fetchRemoteJwks = async (saleorApiUrl: string) => {
   const jwksResponse = await fetch(getJwksUrlFromSaleorApiUrl(saleorApiUrl));
