@@ -1,6 +1,7 @@
 // From https://github.com/alexreardon/tiny-invariant/blob/master/src/tiny-invariant.ts
 
-const isDenoDeploy: boolean = Deno.env.get("DENO_DEPLOYMENT_ID") !== undefined;
+import { isDenoDeploy } from "./utils.ts";
+
 const prefix: string = "Invariant failed";
 
 // Throw an error if the condition fails

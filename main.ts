@@ -19,6 +19,8 @@ import {
 import { DenoAPL } from "./deno-apl.ts";
 import { fetchRemoteJwks, getAppId } from "./utils.ts";
 import { AuthData } from "npm:@saleor/app-sdk@0.43.0/APL";
+import "./logger.ts";
+import * as log from "log/mod.ts";
 
 const apl = new DenoAPL();
 
@@ -59,7 +61,10 @@ function getUrl(req: Request) {
 const routes = [
   GET("/", () => Response.OK("Hello, Root")),
   GET("/manifest", (req) => {
+    log.debug("Requesting manifest", req.headers.get("HOST"));
     const URL = getUrl(req);
+    log.debug("Determined app URL", URL);
+
     return Response.OK({
       id: "witoszekdev.dummy-payment-app",
       name: "Dummy Payment App",
@@ -117,8 +122,11 @@ const routes = [
     const authToken = json.auth_token;
     const saleorDomain = req.headers.get(SALEOR_DOMAIN_HEADER);
     const saleorApiUrl = req.headers.get(SALEOR_API_URL_HEADER);
+    log.info("Running installation", { saleorDomain, saleorApiUrl });
+    log.debug("Installation token", { authToken });
 
     if (!authToken || !saleorDomain || !saleorApiUrl) {
+      log.warning("Missing headers");
       return Response.BadRequest({
         code: "MISSING_HEADER",
         message: "One of requried headers is missing",
@@ -126,8 +134,10 @@ const routes = [
     }
 
     const appId = await getAppId({ saleorApiUrl, token: authToken });
+    log.debug("Got appId", appId);
 
     if (!appId) {
+      log.error("Missing app id", { saleorDomain, saleorApiUrl });
       return Response.BadRequest({
         code: "UNKNOWN_APP_ID",
         message: `The auth data given during registration request could not be used to fetch app ID. 
@@ -136,7 +146,9 @@ const routes = [
     }
 
     const jwks = await fetchRemoteJwks(saleorApiUrl);
+    log.debug("Got jwks", jwks);
     if (!jwks) {
+      log.error("Missing jwks", { saleorDomain, saleorApiUrl });
       return Response.BadRequest({
         code: "JWKS_NOT_AVAILABLE",
         message: "Can't fetch the remote JWKS.",
@@ -153,7 +165,9 @@ const routes = [
 
     try {
       apl.set(authData);
-    } catch (_e) {
+      log.debug("Auth data saved");
+    } catch (error) {
+      log.critical("Cannot save auth data", error);
       return Response.InternalServerError({
         code: "APL_SAVE_ERROR",
         message: "Cannot save APL",

@@ -53,3 +53,6 @@ export const getAppId = async ({
     return undefined;
   }
 };
+
+export const isDenoDeploy: boolean =
+  Deno.env.get("DENO_DEPLOYMENT_ID") !== undefined;
