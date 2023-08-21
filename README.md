@@ -181,3 +181,6 @@ Variables:
 - `transactionEventReport` endpoint
 - CLI for getting app auth data
 - Add nice splash screen that renders README
+- Simulation of async and sync flow
+  - Sync: request refund -> return pspReference -> send transactionEventReport after x seconds
+  - Async: request refund -> retrun success
