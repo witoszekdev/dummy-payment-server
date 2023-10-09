@@ -24,10 +24,18 @@ import * as log from "log/mod.ts";
 
 const apl = new DenoAPL();
 
+type TransactionActions = "CHARGE" | "REFUND" | "CANCEL";
+type TransactionProcessAction = "AUTHORIZATION" | "CHARGE";
+
 interface TransactionRequestResponse {
   pspReference: string;
   result: string;
   amount: string;
+  data?: Record<string, string>;
+  time?: string;
+  externalUrl?: string;
+  nessage?: string;
+  actions?: Array<TransactionActions>;
 }
 
 interface ActionRequestResponse {
@@ -41,13 +49,26 @@ interface ActionRequestResponse {
   };
 }
 
+function getTransactionActions(
+  action: TransactionProcessAction,
+): Array<TransactionActions> {
+  if (action === "CHARGE") {
+    return ["REFUND"];
+  }
+  if (action === "AUTHORIZATION") {
+    return ["CHARGE", "CANCEL"];
+  }
+  return [];
+}
+
 async function getTransactionResponse(
   req: Request,
-  logger: log.Logger
+  logger: log.Logger,
 ): Promise<Response> {
   const json = await req.json();
   const amount = json.action.amount;
-  const action = json.action.actionType ?? "CHARGE";
+  const action =
+    json.action.actionType ?? ("CHARGE" as TransactionProcessAction);
   const saleorApiUrl = req.headers.get(SALEOR_API_URL_HEADER);
   const data = json?.data;
 
@@ -74,13 +95,14 @@ async function getTransactionResponse(
     pspReference: "initialize-test",
     result: `${action}_SUCCESS`,
     amount,
+    actions: getTransactionActions(action),
     ...data,
   } satisfies TransactionRequestResponse);
 }
 
 async function getActionResponse(
   req: Request,
-  logger: log.Logger
+  logger: log.Logger,
 ): Promise<Response> {
   const json = await req.json();
   const amount = json.action.amount;
