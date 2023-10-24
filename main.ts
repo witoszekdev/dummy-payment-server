@@ -34,7 +34,7 @@ interface TransactionRequestResponse {
   data?: Record<string, string>;
   time?: string;
   externalUrl?: string;
-  nessage?: string;
+  message?: string;
   actions?: Array<TransactionActions>;
 }
 
