@@ -7,7 +7,8 @@
   <body>
     <h1>Dummy Payment Server</h1>
 
-    <button id="fetch">Fetch auth data</button>
+    <button id="fetch" style="visibility: hidden;">Fetch auth data</button>
+    <div id="iframe-error" style="display: none;">Install the app in Saleor and view this page from Saleor Dashboard</div>
     <pre id="text" style="text-wrap: wrap"></pre>
 
     <script type="module">
@@ -15,9 +16,19 @@
       const appBridge = new AppBridge();
       let token;
 
+      console.log(appBridge.getState());
+      const fetchButton = document.getElementById("fetch");
+      const errDiv = document.getElementById("iframe-error");
+
+      if (!appBridge.getState()?.saleorApiUrl) {
+        errDiv.style.display = "block";
+      }
+
       appBridge.subscribe("handshake", (payload) => {
         token = payload.token;
+        fetchButton.style.visibility = "visible";
       });
+
 
       document.getElementById("fetch").addEventListener("click", () => {
         const state = appBridge.getState();
