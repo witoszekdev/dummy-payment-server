@@ -389,16 +389,13 @@ const routes = [
     });
 
     try {
-      const saleorResponse = await client.request(
-        saleorApiUrl,
-        transactionEventReport,
-        data,
-      );
+      const saleorResponse = await client.request(transactionEventReport, data);
       return Response.OK({
         ok: true,
         data: saleorResponse,
       });
     } catch (err) {
+      logger.error(err);
       return Response.InternalServerError({
         ok: false,
         err,
