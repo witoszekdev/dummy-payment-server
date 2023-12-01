@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dummy Payment Server</title>
+  </head>
+  <body>
+    <h1>Dummy Payment Server</h1>
+
+    <button id="fetch">Fetch auth data</button>
+    <pre id="text" style="text-wrap: wrap"></pre>
+
+    <script type="module">
+      import { AppBridge } from "https://esm.sh/@saleor/app-sdk@0.46.0/app-bridge";
+      const appBridge = new AppBridge();
+      let token;
+
+      appBridge.subscribe("handshake", (payload) => {
+        token = payload.token;
+      });
+
+      document.getElementById("fetch").addEventListener("click", () => {
+        const state = appBridge.getState();
+        console.log({
+          saleorApiUrl: state.saleorApiUrl,
+          token,
+        });
+        fetch(`${document.location.origin}/fetch-token`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            saleorApiUrl: state.saleorApiUrl,
+            token,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById("text").innerHTML = JSON.stringify(
+              data,
+              null,
+              2,
+            );
+          });
+      });
+    </script>
+  </body>
+</html>

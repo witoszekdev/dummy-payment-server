@@ -21,6 +21,9 @@ import { astToString, fetchRemoteJwks, getAppId } from "./utils.ts";
 import { AuthData } from "saleor-app-sdk/APL";
 import "./logger.ts";
 import * as log from "log/mod.ts";
+import { GraphQLClient } from "graphql_request/mod.ts";
+import { verifyJWT } from "saleor-app-sdk/verify-jwt";
+import { transactionEventReport } from "./mutations.ts";
 
 const apl = new DenoAPL();
 
@@ -163,7 +166,13 @@ function getUrl(req: Request) {
 }
 
 const routes = [
-  GET("/", () => Response.OK("Hello, Root")),
+  GET("/", async (req) => {
+    // check jwks from request and check if it's issued by saleor from saleorApiUrl
+
+    console.log(req);
+    const file = await Deno.readFile("./frontend/index.html");
+    return Response.OK(file);
+  }),
   GET("/manifest", (req) => {
     log.debug("Requesting manifest", req.headers.get("HOST"));
     const URL = getUrl(req);
@@ -332,6 +341,69 @@ const routes = [
     logger.debug("Request details", { body: req.body, headers: req.headers });
 
     return Response.OK("Accepted");
+  }),
+  POST("/fetch-token", async (req) => {
+    const json = await req.json();
+    const { saleorApiUrl, token } = json ?? {};
+
+    const authData = await apl.get(saleorApiUrl);
+
+    if (!authData) {
+      return Response.NotFound({
+        ok: false,
+        error: "Not found",
+      });
+    }
+
+    try {
+      await verifyJWT({
+        saleorApiUrl,
+        token,
+        appId: authData.appId,
+        requiredPermissions: ["MANAGE_APPS", "HANDLE_PAYMENTS"],
+      });
+      return Response.OK(authData);
+    } catch (_err) {
+      return Response.Unauthorized({ ok: false, error: "Unauthorized" });
+    }
+  }),
+  POST("/transaction-event-report", async (req) => {
+    const logger = log.getLogger("transaction-event-report");
+
+    const json = await req.json();
+    logger.info("Request", json);
+    logger.debug("Request details", { body: req.body, headers: req.headers });
+
+    const { saleorApiUrl, data, apiKey } = json ?? {};
+    if (!saleorApiUrl || !data) {
+      return Response.BadRequest({
+        ok: false,
+        error: "Missing saleorApiUrl or data in request JSON",
+      });
+    }
+
+    const client = new GraphQLClient(saleorApiUrl, {
+      headers: {
+        authorization: `Bearer ${apiKey}`,
+      },
+    });
+
+    try {
+      const saleorResponse = await client.request(
+        saleorApiUrl,
+        transactionEventReport,
+        data,
+      );
+      return Response.OK({
+        ok: true,
+        data: saleorResponse,
+      });
+    } catch (err) {
+      return Response.InternalServerError({
+        ok: false,
+        err,
+      });
+    }
   }),
 ];
 

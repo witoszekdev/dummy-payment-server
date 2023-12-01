@@ -1,4 +1,5 @@
 import { ASTNode, print } from "graphql/mod.ts";
+import { AuthData } from "saleor-app-sdk/APL";
 import { getJwksUrlFromSaleorApiUrl } from "saleor-app-sdk/urls";
 
 export const fetchRemoteJwks = async (saleorApiUrl: string) => {
@@ -42,7 +43,7 @@ export const getAppId = async ({
     });
     if (response.status !== 200) {
       console.error(
-        `Could not get the app ID: Saleor API has response code ${response.status}`
+        `Could not get the app ID: Saleor API has response code ${response.status}`,
       );
       return undefined;
     }
