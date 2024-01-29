@@ -63,17 +63,19 @@ The app has excessive permissions for debug purposes. They can be modified insid
 
 Below you will find example mutations that can be used to fully go through the payment flow in Saleor: from requesting API key from app to initialize storefront (`paymentGatewayInitialize`), through making a payment (`transactionInitialize`) and confirming it with a two-step authorization (like 3D secure) (`transactionProcess`) to reporting a success / failure by the payment provider (`transactionEventReport` POST request to app)
 
+### App token
+
+If you would like to impersonate the app, you can do that by visiting the app page in Saleor Dashboard. You will be able to copy the app token from there
+
+![](./docs/dashboard.png)
+
 ### Bruno
 
 [Bruno](https://docs.usebruno.com/) is an open source tool for exploring and testing APIs. It's similar to Postman or Insomnia.
 
 It can be used for testing the Transactions API in Saleor with the provided example requests.
 
-### App token
-
-If you would like to impersonate the app, you can do that by visiting the app page in Saleor Dashboard. You will be able to copy the app token from there
-
-![](./docs/dashboard.png)
+In order to send requests from Bruno, you must create an **environment**. You can find the variables needed in `environments/localhost.bru` that works with Saleor that's running locally in [Saleor Platform](https://github.com/saleor/saleor-platform)
 
 ### `paymentGatewayInitialize`
 
