@@ -1,0 +1,77 @@
+meta {
+  name: transactionInitialize - received
+  type: graphql
+  seq: 29
+}
+
+post {
+  url: {{API_URL}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:graphql {
+  mutation TransactionInitalize($amount: PositiveDecimal, $checkoutId: ID!, $data: JSON) {
+    transactionInitialize(
+      amount: $amount
+      id: $checkoutId
+      paymentGateway: {id: 
+  "witoszekdev.dummy-payment-app", data: $data}
+    ) {
+      transaction {
+        id
+        actions
+        message
+        pspReference
+        __typename
+      }
+      transactionEvent {
+          amount {
+              amount
+              currency
+          }
+          type
+          message
+          id
+          externalUrl
+          pspReference
+      }
+      data
+      errors {
+        field
+        message
+        code
+        __typename
+      }
+      __typename
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+      "amount": "{{checkoutAmount}}",
+      "checkoutId": "{{checkoutId}}",
+      "data": {
+          "result": "AUTHORIZATION_SUCCESS",
+           "data": {
+               "clientStateDataIndicator": true,
+          "origin": "http://localhost:3001",
+          "paymentMethod": {
+              "iban": "ES91 2100 0418 4502 0005 1332",
+              "ownerName": "A. Martin",
+              "type": "sepadirectdebit"
+              },
+          "returnUrl": "http://localhost:3001/all"
+           }
+      }
+  }
+}
+
+vars:post-response {
+  transactionId: res.body.data.transactionInitialize.transaction.id
+}

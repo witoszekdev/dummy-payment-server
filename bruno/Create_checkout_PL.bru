@@ -1,0 +1,85 @@
+meta {
+  name: 1. Create checkout - PL
+  type: graphql
+  seq: 9
+}
+
+post {
+  url: {{API_URL}}
+  body: graphql
+  auth: bearer
+}
+
+headers {
+  ~Authorization-Bearer: {{userToken}}
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:graphql {
+  mutation($variantId: ID!, $email: String, $chanelName: String!) {
+    checkoutCreate(
+      input: {
+        channel: $chanelName
+        lines: [{ variantId: $variantId, quantity: 1 }],
+        email: $email,
+        billingAddress: {
+          firstName: "Jonathan",
+          lastName: "Doe",
+          companyName: "Saleor Commerce",
+          streetAddress1: "Tęczowa 7",
+          city: "Wrocław",
+          postalCode: "53-601",
+          country: PL,
+          phone: "123123123"
+        },
+        shippingAddress: {
+          firstName: "Jonathan",
+          lastName: "Doe",
+          companyName: "Saleor Commerce",
+          streetAddress1: "Tęczowa 7",
+          city: "Wrocław",
+          postalCode: "53-601",
+          country: PL,
+          phone: "123123123"
+        }
+      }
+    ) {
+      checkout {
+        id
+        availablePaymentGateways {
+            id
+            name
+        }
+        shippingMethods {
+            id
+            price {
+                amount
+                currency
+            }
+        }
+      }
+      errors {
+        field
+        message
+        code
+      }
+    }
+  }
+  
+}
+
+body:graphql:vars {
+  {
+      "variantId": "{{productVariantId}}",
+      "chanelName": "{{channel_PLN}}",
+      "email": "{{userEmail}}"
+  }
+}
+
+vars:post-response {
+  checkoutId: res.body.data.checkoutCreate.checkout.id
+  deliveryMethodId: res.body.data.checkoutCreate.checkout.shippingMethods[0].id
+}

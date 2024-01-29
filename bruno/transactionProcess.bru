@@ -1,0 +1,73 @@
+meta {
+  name: transactionProcess
+  type: graphql
+  seq: 30
+}
+
+post {
+  url: {{API_URL}}
+  body: graphql
+  auth: bearer
+}
+
+headers {
+  Authorization-Bearer: {{userToken}}
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:graphql {
+  mutation TransactionInitalize($transactionId: ID!, $data: JSON) {
+    transactionProcess(
+      id: $transactionId,
+      data: $data
+     ) {
+      transaction {
+        id
+        actions
+        message
+        pspReference
+        __typename
+      }
+      transactionEvent {
+          amount {
+              amount
+              currency
+          }
+          type
+          message
+          id
+          externalUrl
+      }
+      data
+      errors {
+        field
+        message
+        code
+        __typename
+      }
+      __typename
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+      "transactionId": "{{transactionId}}",
+      "data": {
+          "result": "CHARGE_REQUEST",
+           "data": {
+               "clientStateDataIndicator": true,
+          "origin": "http://localhost:3001",
+          "paymentMethod": {
+              "iban": "ES91 2100 0418 4502 0005 1332",
+              "ownerName": "A. Martin",
+              "type": "sepadirectdebit"
+              },
+          "returnUrl": "http://localhost:3001/all"
+           }
+      }
+  }
+}

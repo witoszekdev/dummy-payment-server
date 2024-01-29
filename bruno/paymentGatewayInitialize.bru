@@ -1,0 +1,47 @@
+meta {
+  name: paymentGatewayInitialize
+  type: graphql
+  seq: 23
+}
+
+post {
+  url: {{API_URL}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{userToken}}
+}
+
+body:graphql {
+  mutation InitializeGateway($checkoutId: ID!, $data: JSON, $appId: String!) {
+    paymentGatewayInitialize(
+      paymentGateways: [{ id: $appId, data: $data }]
+      id: $checkoutId
+    ) {
+      gatewayConfigs {
+        id
+        data
+        errors {
+          field
+          message
+          code
+        }
+      }
+      errors {
+        field
+        message
+        code
+      }
+    }
+  }
+  
+}
+
+body:graphql:vars {
+  {
+      "checkoutId": "{{checkoutId}}",
+      "appId": "witoszekdev.dummy-payment-app"
+  }
+}

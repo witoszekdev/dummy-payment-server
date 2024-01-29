@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Dummy Payment App",
+  "type": "collection",
+  "presets": {
+    "requestType": "graphql",
+    "requestUrl": "{{API_URL}}"
+  }
+}

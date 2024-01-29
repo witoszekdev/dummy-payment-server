@@ -1,0 +1,67 @@
+meta {
+  name: transactionInitialize - action required
+  type: graphql
+  seq: 28
+}
+
+post {
+  url: {{API_URL}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:graphql {
+  mutation TransactionInitalize($amount: PositiveDecimal, $checkoutId: ID!, $data: JSON) {
+    transactionInitialize(
+      amount: $amount
+      id: $checkoutId,
+      paymentGateway: {id: 
+  "witoszekdev.dummy-payment-app", data: $data}
+    ) {
+      transaction {
+        id
+        actions
+        message
+        pspReference
+        __typename
+      }
+      transactionEvent {
+          amount {
+              amount
+              currency
+          }
+          type
+          message
+          id
+          externalUrl
+      }
+      data
+      errors {
+        field
+        message
+        code
+        __typename
+      }
+      __typename
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+      "amount": "{{checkoutAmount}}",
+      "checkoutId": "{{checkoutId}}",
+      "data": {
+          "result": "CHARGE_SUCCESS",
+          "pspRefernce": "okok"
+          }
+      }
+}
+
+vars:post-response {
+  transactionId: res.body.data.transactionInitialize.transaction.id
+}
