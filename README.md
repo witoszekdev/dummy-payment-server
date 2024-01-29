@@ -1,12 +1,12 @@
 # Dummy Payment Server
 
-Made for testing Saleor's Transaction API
+Testing Saleor Transaction API without a real payment provider
 
 ## Installation
 
 ### Deno
 
-This project requires deno to be installed. [Follow official installation instructions](https://deno.land/manual@v1.36.0/getting_started/installation) if deno is not installed on your system
+This project requires Deno to be installed. It's a JavaScript backend runtime, similar to Node.js. [Follow official installation instructions](https://deno.land/manual@v1.36.0/getting_started/installation) if Deno is not installed on your system
 
 ### Running app
 
@@ -18,8 +18,8 @@ deno task start
 
 ### Tunnel
 
-> **Note**
-> Before you go ahead and start your app locally, give Deno Deploy a try! It takes a ~2 seconds to deploy the app after you push the changes to the repository 😉
+> [!TIP]
+> Before you go ahead and start your app locally, give [Deno Deploy](https://deno.com/deploy) a try! It's a serverless deployment environment (like Vercel, AWS Lambda). It's super fast, it takes a ~2 seconds to deploy the app after you push the changes to the repository 😉
 
 Create a tunnel, to make your app accessible from Internet. You can use [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/install-and-setup/tunnel-guide/local/):
 
@@ -27,18 +27,18 @@ Create a tunnel, to make your app accessible from Internet. You can use [Cloudfl
 cloudflared tunnel --url localhost:5544
 ```
 
-or by using ngrook:
+or by using ngrok:
 
 ```
 ngrok http 5544
 ```
 
-> **Note**
+> [!WARNING]
 > Saleor CLI's tunnel doesn't work with Deno
 
 ### Install app
 
-After running a tunnel install the app in Saleor.
+After running a tunnel, install the app in Saleor.
 
 - In Dashboard: go to Apps > Install external app
 - In CLI: `saleor app install`
@@ -47,7 +47,7 @@ After running a tunnel install the app in Saleor.
 
 For example, if your tunnel URL is `https://happy-tunnel.com` then the manifest URL will be `https://happy-tunnel.com/manifest`
 
-After installation `auth_token` will be visible in the console. It is also stored inside `.token` file.
+After installation, `auth_token` will be visible in the console. It is also stored inside `.token` file.
 
 ## Deployment
 
@@ -57,15 +57,23 @@ Use [Deno Deploy](https://dash.deno.com/projects) to deploy your forked reposito
 
 ## Example usage
 
-The app id is `witoszekdev.dummy-payment-app`.
+The app ID is `witoszekdev.dummy-payment-app`.
 
-The app has excessive permissions for debug purposes. They can be modified inside `main.ts` file
+The app has excessive permissions for debug purposes. They can be modified inside `main.ts` file.
+
+Below you will find example mutations that can be used to fully go through the payment flow in Saleor: from requesting API key from app to initialize storefront (`paymentGatewayInitialize`), through making a payment (`transactionInitialize`) and confirming it with a two-step authorization (like 3D secure) (`transactionProcess`) to reporting a success / failure by the payment provider (`transactionEventReport` POST request to app)
 
 ### Bruno
 
 [Bruno](https://docs.usebruno.com/) is an open source tool for exploring and testing APIs. It's similar to Postman or Insomnia.
 
 It can be used for testing the Transactions API in Saleor with the provided example requests.
+
+### App token
+
+If you would like to impersonate the app, you can do that by visiting the app page in Saleor Dashboard. You will be able to copy the app token from there
+
+![](./docs/dashboard.png)
 
 ### `paymentGatewayInitialize`
 
@@ -182,11 +190,26 @@ Variables:
 }
 ```
 
+### transactionEventReport
+
+Make a POST request to `<APP_URL/transaction-event-report` with variables that are passed to `transactionEventReport` mutation in file `mutations.ts`:
+
+```json
+{
+  "amount": "amount of the reported envet",
+  "availableActions": ["REFUND", "CHARGE", "CANCEL"],
+  "id": "id of the transaction",
+  "messae": "message from the payment provider",
+  "pspReference": "pspReference from the payment provider",
+  "type": "CHARGE_SUCCESS"
+}
+```
+
+The request must be authenticated with the app token that you can see in Saleor Dashboard
+
 ## TODO
 
-- `transactionEventReport` endpoint
 - CLI for getting app auth data
-- Add nice splash screen that renders README
 - Simulation of async and sync flow
   - Sync: request refund -> return pspReference -> send transactionEventReport after x seconds
   - Async: request refund -> retrun success
