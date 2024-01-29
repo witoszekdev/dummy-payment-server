@@ -61,6 +61,12 @@ The app id is `witoszekdev.dummy-payment-app`.
 
 The app has excessive permissions for debug purposes. They can be modified inside `main.ts` file
 
+### Bruno
+
+[Bruno](https://docs.usebruno.com/) is an open source tool for exploring and testing APIs. It's similar to Postman or Insomnia.
+
+It can be used for testing the Transactions API in Saleor with the provided example requests.
+
 ### `paymentGatewayInitialize`
 
 ```graphql
