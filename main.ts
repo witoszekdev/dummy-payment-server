@@ -87,7 +87,7 @@ async function getTransactionResponse(
     body: req.body,
   });
 
-  if (!amount || !action || !saleorApiUrl) {
+  if (typeof amount !== "undefined" || !action || !saleorApiUrl) {
     logger.error("Missing parameter");
     return Response.BadRequest({
       message: "Missing params",
@@ -134,7 +134,7 @@ async function getActionResponse(
     });
   }
 
-  if (!amount || !saleorApiUrl) {
+  if (typeof amount !== "undefined" || !saleorApiUrl) {
     logger.error("Missing amount or saleorApiUrl");
     return Response.BadRequest({
       pspReference: `${action}-1234`,
