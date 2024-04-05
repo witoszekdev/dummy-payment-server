@@ -1,16 +1,5 @@
 {
   "version": "3",
-  "packages": {
-    "specifiers": {
-      "npm:@types/node": "npm:@types/node@18.16.19"
-    },
-    "npm": {
-      "@types/node@18.16.19": {
-        "integrity": "sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA==",
-        "dependencies": {}
-      }
-    }
-  },
   "redirects": {
     "https://cdn.esm.sh/extract-files@12.0.0/extractFiles.mjs": "https://esm.sh/extract-files@12.0.0/extractFiles.mjs",
     "https://cdn.esm.sh/extract-files@12.0.0/isExtractableFile.mjs": "https://esm.sh/extract-files@12.0.0/isExtractableFile.mjs"
@@ -176,25 +165,23 @@
     "https://deno.land/x/wren@0.8.0/routing.ts": "f75e3da3f5d4d3a242a41a9334c98f7f10ae4382da0a0a308ed86f6aab934304",
     "https://deno.land/x/wren@0.8.0/types.ts": "62dc61a890eafa500c4c8469f1954b7c435f9ab7412c69de10723967565f75d1",
     "https://deno.land/x/wren@0.8.0/util.ts": "5a94cde820ceac32c9bf6bd610b45cdb46153ffe8b1b0b94707c61490c50ee96",
-    "https://esm.sh/@saleor/app-sdk@0.43.0/APL": "ea531960b43c713b185736d4915791911a7eb35211859faf5cfa07a157928531",
-    "https://esm.sh/@saleor/app-sdk@0.43.0/APL/index.js": "835208a2d1f443fda4a1d9e85621dd11e1ddcf3bfb190b677e3b86efa606d141",
-    "https://esm.sh/@saleor/app-sdk@0.43.0/const": "1750d57e5f59b6b0e048ae4b6f8d45691a9bd7dae043d4a8ef9bf526e3ce4246",
-    "https://esm.sh/@saleor/app-sdk@0.43.0/urls": "f4b024ecda1f7b8050cecfb8a2e5e5646cdaaa477293ac95748c88393a88271e",
+    "https://esm.sh/@saleor/app-sdk@0.43.0/APL": "835208a2d1f443fda4a1d9e85621dd11e1ddcf3bfb190b677e3b86efa606d141",
+    "https://esm.sh/@saleor/app-sdk@0.43.0/const": "16c0e96f69b0ceb5b0c10882f39981a8287cc5e755e1cbf0bed3b54e67f0ae71",
+    "https://esm.sh/@saleor/app-sdk@0.43.0/urls": "b20812903e889bde550f60447ae28ddde7497e075eeb411069f827f4189b9d71",
     "https://esm.sh/@saleor/app-sdk@0.43.0/verify-jwt": "15c3daa743d5b4d1c9f3ce50952b11760c2f3badeb0ddb537f3b961e3cf85c79",
     "https://esm.sh/extract-files@12.0.0/extractFiles.mjs": "58e5f1fcf50e3a362d9bde0e2c1a624a7d89d60ac2de005afd895d0d452cca62",
     "https://esm.sh/extract-files@12.0.0/isExtractableFile.mjs": "2757358bbc9141b93cb27d7e0ba98c1e703172dd58fb7d533a31476419d2416f",
-    "https://esm.sh/graphql@16.6.0/language/parser#=": "d2136c12ba1c7ac94b6f298bd2f81433cd0df9b874b9e08e512bda768a5ea8ae",
-    "https://esm.sh/v131/@saleor/app-sdk@0.43.0/denonext/APL.js": "df4463041e2b789413a0c1702c33374bf2824ce15c10345bf8c0ea29f5438d25",
-    "https://esm.sh/v131/@saleor/app-sdk@0.43.0/denonext/const.js": "63064ec2cab5db2556c09e5c609b262e212dbb96ee6ad67844d5651d622f09a8",
-    "https://esm.sh/v131/@saleor/app-sdk@0.43.0/denonext/urls.js": "9621c8e1b9e62469e9e4c9c8ab09b392463bee5d7d13ace7fb86224ebaca9891",
-    "https://esm.sh/v131/debug@4.3.4/denonext/debug.mjs": "892826bb4505deb6337df2f0f72b1e355e5377e702dd739b78774539d7482f5c",
-    "https://esm.sh/v131/ms@2.1.2/denonext/ms.mjs": "aa4dc45ba72554c5011168f8910cc646c37af53cfff1a15a4decced838b8eb14",
-    "https://esm.sh/v133/graphql@16.6.0/denonext/language/parser.js": "82063e5ee234089909652e04ccd9f0e1c0670c04ac6db896099a638ae759b182",
+    "https://esm.sh/graphql@16.6.0/language/ast#=": "3370c36acfd7dc994d7f2242361dbc538b7b239f0cb41603f97a5d67273f5255",
+    "https://esm.sh/graphql@16.6.0/language/parser#=": "38b1158134aed40573b9885cc5f3b020fe8b60c75aa8b32420388c577615b97a",
     "https://esm.sh/v135/@saleor/app-sdk@0.43.0/denonext/APL.js": "a34e82647aaa139474d18c2695cd1e9c56aab38d5b0c4a517aee72c073bf984c",
+    "https://esm.sh/v135/@saleor/app-sdk@0.43.0/denonext/const.js": "63064ec2cab5db2556c09e5c609b262e212dbb96ee6ad67844d5651d622f09a8",
+    "https://esm.sh/v135/@saleor/app-sdk@0.43.0/denonext/urls.js": "9621c8e1b9e62469e9e4c9c8ab09b392463bee5d7d13ace7fb86224ebaca9891",
     "https://esm.sh/v135/@saleor/app-sdk@0.43.0/denonext/verify-jwt.js": "c75fe7c5dd56355077d9986be32d644c05b85b97b1412cc66d6db7da4d08a879",
     "https://esm.sh/v135/debug@4.3.4/denonext/debug.mjs": "d2ebf776ea77aa7df1b4460eb2a4aab245a9d5b19f11fa1db25f756b350bae9d",
     "https://esm.sh/v135/extract-files@12.0.0/denonext/extractFiles.js": "59b30d503c5d9ce135dd76c34ac92cf7e9f85cd129d6be2ff61553bb612ac75f",
     "https://esm.sh/v135/extract-files@12.0.0/denonext/isExtractableFile.js": "93462c162e29fc0e8fd7e9de3665dfd7705f03d41d2721d654f177bc2a7fe305",
+    "https://esm.sh/v135/graphql@16.6.0/denonext/language/ast.js": "1c8cc697db4ec96d354496fa69a2d6552ec5801a6c3bdbe5505f369d872d594c",
+    "https://esm.sh/v135/graphql@16.6.0/denonext/language/parser.js": "82063e5ee234089909652e04ccd9f0e1c0670c04ac6db896099a638ae759b182",
     "https://esm.sh/v135/is-plain-obj@4.1.0/denonext/is-plain-obj.mjs": "d3d86a7174ad7935de7b00f904b6424c103bce530c502efb7f42114cbb1a555f",
     "https://esm.sh/v135/jose@4.15.4/denonext/jose.mjs": "2a603276d8c19b8aa7065a4921da7ca216be01325efc460e8ce7dacd591b4b73",
     "https://esm.sh/v135/ms@2.1.2/denonext/ms.mjs": "aa4dc45ba72554c5011168f8910cc646c37af53cfff1a15a4decced838b8eb14"
