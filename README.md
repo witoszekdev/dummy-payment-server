@@ -151,7 +151,7 @@ Providing `data` parameter in this mutation can be used to override a response s
 >   "data": {
 >     "result": "CHARGE_SUCCESS",
 >     "data": {
->      "my-custom-key": "my-custom-value
+>       "my-custom-key": "my-custom-value
 >     }
 >   }
 > }
@@ -186,7 +186,7 @@ mutation TransactionInitalize(
 
 Variables:
 
-```json
+```js
 {
   "checkoutId": "<checkout_id>",
   "amount": 100 // your checkout amount
@@ -230,7 +230,7 @@ mutation TransactionProcess($transactionId: ID!, $data: JSON) {
 
 Variables:
 
-```json
+```js
 {
   "transactionId": "<transaction id from transactionInitialzie>"
   "data": {
@@ -245,7 +245,7 @@ Variables:
 
 Make a POST request to `<APP_URL/transaction-event-report` with variables that are passed to `transactionEventReport` mutation in file `mutations.ts`:
 
-```json
+```js
 {
   "saleorApiUrl": "http://localhost:3000/graphql/",
   "apiKey": "your_app_token",
