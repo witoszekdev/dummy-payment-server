@@ -98,9 +98,11 @@ If you would like to impersonate the app, you can do that by visiting the app pa
 
 It can be used for testing the Transactions API in Saleor with the provided example requests.
 
-In order to send requests from Bruno, you must create an **environment**. You can find the variables needed in `environments/localhost.bru` that works with Saleor that's running locally in [Saleor Platform](https://github.com/saleor/saleor-platform)
+In order to send requests from Bruno, you must create an **environment**. You can find the variables needed in `environments/localhost.bru` that works with Saleor that's running locally in [Saleor Platform](https://github.com/saleor/saleor-platform). To use it in other environment simply copy the file in `bruno` folder or use "Duplicate envionment" feature in Bruno.
 
 ### `paymentGatewayInitialize`
+
+This mutation usually is used to send data required by payment provider SDK. In this app it's not used for anything.
 
 ```graphql
 mutation GatewayInitialize($id: ID!) {
@@ -136,6 +138,25 @@ Variables:
 
 ### `transactionInitialize`
 
+Providing `data` parameter in this mutation can be used to override a response sent to Saleor from `TRANSACTION_INITIALIZE_SESSION` webhook received by the app.
+
+> [!TIP]
+> Please note that `data` in mutation, is different than `data` parameter in webhook response.
+>
+> - Data in mutation: is used to provide a custom response to Saleor
+> - Data in webhook response: can contain any object that will be sent to Saleor as a response
+>
+> ```json
+> {
+>   "data": {
+>     "result": "CHARGE_SUCCESS",
+>     "data": {
+>      "my-custom-key": "my-custom-value
+>     }
+>   }
+> }
+> ```
+
 ```graphql
 mutation TransactionInitalize(
   $amount: PositiveDecimal
@@ -170,18 +191,18 @@ Variables:
   "checkoutId": "<checkout_id>",
   "amount": 100 // your checkout amount
   "data": {
-    "final": true
+    // Response from TRANSACTION_INITIALIZE_SESSION webhook that can be overriden
+    result: "CHARGE_SUCCESS",
+    pspReference: "my-psp-ref"
   }
 }
 ```
 
-When you provide `data.final = true`, then the app will return `CHARGE_SUCCESS` response, otherwise it will return `CHARGE_REQUESTED`.
-
 ### `transactionProcess`
 
 ```graphql
-mutation TransactionProcess($transactionId: ID!) {
-  transactionProcess(data: {}, id: $transactionId) {
+mutation TransactionProcess($transactionId: ID!, $data: JSON) {
+  transactionProcess(data: $data, id: $transactionId) {
     transaction {
       id
     }
@@ -212,6 +233,11 @@ Variables:
 ```json
 {
   "transactionId": "<transaction id from transactionInitialzie>"
+  "data": {
+    // Response from TRANSACTION_PROCESS_SESSION webhook that can be overriden
+    result: "CHARGE_SUCCESS",
+    pspReference: "my-psp-ref-2"
+  }
 }
 ```
 
@@ -221,12 +247,17 @@ Make a POST request to `<APP_URL/transaction-event-report` with variables that a
 
 ```json
 {
-  "amount": "amount of the reported envet",
-  "availableActions": ["REFUND", "CHARGE", "CANCEL"],
-  "id": "id of the transaction",
-  "messae": "message from the payment provider",
-  "pspReference": "pspReference from the payment provider",
-  "type": "CHARGE_SUCCESS"
+  "saleorApiUrl": "http://localhost:3000/graphql/",
+  "apiKey": "your_app_token",
+  "data": {
+    // Data sent to Saleor in a mutation
+    "amount": "amount of the reported envet",
+    "availableActions": ["REFUND", "CHARGE", "CANCEL"],
+    "id": "id of the transaction",
+    "messae": "message from the payment provider",
+    "pspReference": "pspReference from the payment provider",
+    "type": "CHARGE_SUCCESS"
+  }
 }
 ```
 
