@@ -1,7 +1,7 @@
 meta {
-  name: transactionInitialize - received
+  name: transactionInitialize - charge pending
   type: graphql
-  seq: 29
+  seq: 6
 }
 
 post {
@@ -56,18 +56,11 @@ body:graphql:vars {
   {
       "amount": "{{checkoutAmount}}",
       "checkoutId": "{{checkoutId}}",
+        // Override response that is sent to Saleor
+        // https://docs.saleor.io/docs/3.x/developer/extending/webhooks/synchronous-events/transaction#response-4
       "data": {
-          "result": "AUTHORIZATION_SUCCESS",
-           "data": {
-               "clientStateDataIndicator": true,
-          "origin": "http://localhost:3001",
-          "paymentMethod": {
-              "iban": "ES91 2100 0418 4502 0005 1332",
-              "ownerName": "A. Martin",
-              "type": "sepadirectdebit"
-              },
-          "returnUrl": "http://localhost:3001/all"
-           }
+          "result": "CHARGE_REQUEST",
+          "pspReference": "my-psp-ref"
       }
   }
 }

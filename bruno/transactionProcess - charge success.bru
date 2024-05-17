@@ -1,0 +1,64 @@
+meta {
+  name: transactionProcess - charge success
+  type: graphql
+  seq: 10
+}
+
+post {
+  url: {{API_URL}}
+  body: graphql
+  auth: bearer
+}
+
+headers {
+  Authorization-Bearer: {{userToken}}
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:graphql {
+  mutation TransactionInitalize($transactionId: ID!, $data: JSON) {
+    transactionProcess(
+      id: $transactionId,
+      data: $data
+     ) {
+      transaction {
+        id
+        actions
+        message
+        pspReference
+        __typename
+      }
+      transactionEvent {
+          amount {
+              amount
+              currency
+          }
+          type
+          message
+          id
+          externalUrl
+      }
+      data
+      errors {
+        field
+        message
+        code
+        __typename
+      }
+      __typename
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+      "transactionId": "{{transactionId}}",
+      "data": {
+          "result": "AUTHORIZATION_SUCCESS",
+          "pspReference": "my-psp-ref-2"
+      }
+  }
+}

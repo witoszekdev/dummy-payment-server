@@ -1,7 +1,7 @@
 meta {
-  name: transactionInitialize - action required
+  name: transactionInitialize - authorization pending
   type: graphql
-  seq: 28
+  seq: 9
 }
 
 post {
@@ -18,7 +18,7 @@ body:graphql {
   mutation TransactionInitalize($amount: PositiveDecimal, $checkoutId: ID!, $data: JSON) {
     transactionInitialize(
       amount: $amount
-      id: $checkoutId,
+      id: $checkoutId
       paymentGateway: {id: 
   "witoszekdev.dummy-payment-app", data: $data}
     ) {
@@ -38,6 +38,7 @@ body:graphql {
           message
           id
           externalUrl
+          pspReference
       }
       data
       errors {
@@ -55,11 +56,13 @@ body:graphql:vars {
   {
       "amount": "{{checkoutAmount}}",
       "checkoutId": "{{checkoutId}}",
+        // Override response that is sent to Saleor
+        // https://docs.saleor.io/docs/3.x/developer/extending/webhooks/synchronous-events/transaction#response-4
       "data": {
-          "result": "CHARGE_SUCCESS",
-          "pspRefernce": "okok"
-          }
+          "result": "AUTHORIZATION_REQUEST",
+          "pspReference": "my-psp-ref"
       }
+  }
 }
 
 vars:post-response {

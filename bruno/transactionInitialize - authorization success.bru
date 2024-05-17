@@ -1,7 +1,7 @@
 meta {
-  name: transactionProcess
+  name: transactionInitialize - authorization success
   type: graphql
-  seq: 30
+  seq: 8
 }
 
 post {
@@ -10,20 +10,18 @@ post {
   auth: bearer
 }
 
-headers {
-  Authorization-Bearer: {{userToken}}
-}
-
 auth:bearer {
   token: {{token}}
 }
 
 body:graphql {
-  mutation TransactionInitalize($transactionId: ID!, $data: JSON) {
-    transactionProcess(
-      id: $transactionId,
-      data: $data
-     ) {
+  mutation TransactionInitalize($amount: PositiveDecimal, $checkoutId: ID!, $data: JSON) {
+    transactionInitialize(
+      amount: $amount
+      id: $checkoutId
+      paymentGateway: {id: 
+  "witoszekdev.dummy-payment-app", data: $data}
+    ) {
       transaction {
         id
         actions
@@ -40,6 +38,7 @@ body:graphql {
           message
           id
           externalUrl
+          pspReference
       }
       data
       errors {
@@ -55,10 +54,15 @@ body:graphql {
 
 body:graphql:vars {
   {
-      "transactionId": "{{transactionId}}",
+      "amount": "{{checkoutAmount}}",
+      "checkoutId": "{{checkoutId}}",
+        // Override response that is sent to Saleor
+        // https://docs.saleor.io/docs/3.x/developer/extending/webhooks/synchronous-events/transaction#response-4
       "data": {
-          "result": "CHARGE_REQUEST",
+          "result": "AUTHORIZATION_SUCCESS",
+            "pspReference": "my-psp-ref",
            "data": {
+             // Data can contain anything - it's usually sent by a payment app to a SDK of payment provider
                "clientStateDataIndicator": true,
           "origin": "http://localhost:3001",
           "paymentMethod": {
@@ -70,4 +74,8 @@ body:graphql:vars {
            }
       }
   }
+}
+
+vars:post-response {
+  transactionId: res.body.data.transactionInitialize.transaction.id
 }

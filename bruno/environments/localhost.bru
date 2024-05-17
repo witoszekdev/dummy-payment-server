@@ -1,18 +1,11 @@
 vars {
   API_URL: http://localhost:8000/graphql/
+  DUMMY_APP_URL: https://dummy-payment-server.deno.dev
   productVariantId: UHJvZHVjdFZhcmlhbnQ6Mzg0
   deliveryMethodId: U2hpcHBpbmdNZXRob2Q6Mg==
-  appToken: {{process.env.APP_TOKEN}}
-  userEmail: {{process.env.USER_EMAIL}}
-  userPassword: {{process.env.USER_PASSWORD}}
-  checkoutUrl: http://localhost:3001
-  channel_EUR: channel-eur
-  channel_PLN: channel-pln
-  channel_USD: default-channel
-  channel_JPY: default-channel
-  channel_CNY: default-channel
-  channel_GBP: default-channel
+  userEmail: test@test.com
+  channel: default-channel
 }
 vars:secret [
-  token
+  DUMMY_APP_TOKEN
 ]

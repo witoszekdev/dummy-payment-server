@@ -1,11 +1,11 @@
 meta {
   name: transactionEventReport
   type: http
-  seq: 32
+  seq: 12
 }
 
 post {
-  url: http://localhost:5544/transaction-event-report
+  url: {{DUMMY_APP_URL}}/transaction-event-report
   body: json
   auth: bearer
 }

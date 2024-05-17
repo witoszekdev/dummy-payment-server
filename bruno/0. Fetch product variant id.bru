@@ -1,0 +1,62 @@
+meta {
+  name: 0. Fetch product variant id
+  type: graphql
+  seq: 1
+}
+
+post {
+  url: {{API_URL}}
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  query FetchProduct($channel: String!) {
+    products(
+      first: 1
+      channel: $channel
+      filter: { isPublished: true, stockAvailability: IN_STOCK, giftCard: false }
+      sortBy: { field: PRICE, direction: DESC }
+    ) {
+      edges {
+        node {
+          id
+          name
+          thumbnail(size: 2048) {
+            url
+            alt
+          }
+          category {
+            name
+          }
+          channel
+          defaultVariant {
+            id
+            name
+            pricing {
+              price {
+                gross {
+                  amount
+                  currency
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+}
+
+body:graphql:vars {
+  {
+    "channel": "{{channel}}"
+  }
+}
+
+script:post-response {
+  let data = res.getBody();
+  bru.setEnvVar("productVariantId", data.data.products.edges[0].node.defaultVariant.id);
+  bru.setVar("productVariantId", data.data.products.edges[0].node.defaultVariant.id);
+}

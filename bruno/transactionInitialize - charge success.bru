@@ -1,0 +1,69 @@
+meta {
+  name: transactionInitialize - charge success
+  type: graphql
+  seq: 5
+}
+
+post {
+  url: {{API_URL}}
+  body: graphql
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:graphql {
+  mutation TransactionInitalize($amount: PositiveDecimal, $checkoutId: ID!, $data: JSON) {
+    transactionInitialize(
+      amount: $amount
+      id: $checkoutId,
+      paymentGateway: {id: 
+  "witoszekdev.dummy-payment-app", data: $data}
+    ) {
+      transaction {
+        id
+        actions
+        message
+        pspReference
+        __typename
+      }
+      transactionEvent {
+          amount {
+              amount
+              currency
+          }
+          type
+          message
+          id
+          externalUrl
+      }
+      data
+      errors {
+        field
+        message
+        code
+        __typename
+      }
+      __typename
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+      "amount": "{{checkoutAmount}}",
+      "checkoutId": "{{checkoutId}}",
+        // Override response that is sent to Saleor
+        // https://docs.saleor.io/docs/3.x/developer/extending/webhooks/synchronous-events/transaction#response-4
+      "data": {
+          "result": "CHARGE_SUCCESS",
+          "pspRefernce": "my-psp-reference"
+          }
+      }
+}
+
+vars:post-response {
+  transactionId: res.body.data.transactionInitialize.transaction.id
+}
