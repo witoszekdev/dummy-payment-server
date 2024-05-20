@@ -22,6 +22,23 @@ Start app:
 deno task start
 ```
 
+### Updating deps cache
+
+In case dependencies cache doesn't match due to some external changes in npm, run this command to update the cache hashes:
+
+> [!TIP]
+> If you receive a following error message:
+>
+> ```
+> error: The source code is invalid, as it does not match the expected hash in the lock file.
+> ```
+>
+> Then you need to run the following command
+
+```bash
+deno cache --lock=deno.lock --lock-write main.ts
+```
+
 ### Tunnel
 
 > [!TIP]
@@ -60,23 +77,6 @@ After installation, `auth_token` will be visible in the console. It is also stor
 Fork this project
 
 Use [Deno Deploy](https://dash.deno.com/projects) to deploy your forked repository.
-
-### Updating deps cache
-
-In case dependencies cache doesn't match due to some external changes in npm, run this command to update the cache hashes:
-
-> [!TIP]
-> If you receive a following error message:
->
-> ```
-> error: The source code is invalid, as it does not match the expected hash in the lock file.
-> ```
->
-> Then you need to run the following command
-
-```bash
-deno cache --lock=deno.lock --lock-write main.ts
-```
 
 ## Example usage
 
