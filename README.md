@@ -36,6 +36,7 @@ In case dependencies cache doesn't match due to some external changes in npm, ru
 > Then you need to run the following command
 
 ```bash
+rm deno.lock
 deno cache --lock=deno.lock --lock-write main.ts
 ```
 
