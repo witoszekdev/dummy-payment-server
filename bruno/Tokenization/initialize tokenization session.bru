@@ -1,0 +1,25 @@
+meta {
+  name: initialize tokenization session
+  type: graphql
+  seq: 1
+}
+
+post {
+  url: {{API_URL}}
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  mutation InitializeTokenizationSession($channelId: ID!, $appId: String!, $data: JSON) {
+    paymentGatewayInitializeTokenization(channel: $channelId, id: $appId, data: $data) {
+      result
+      data
+      errors {
+        field
+        message
+        code
+      }
+    }
+  }
+}

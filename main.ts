@@ -7,7 +7,12 @@ import { AppManifest } from "./types.ts";
 import {
   cancelSub,
   chargeSub,
+  deleteStoredPaymentMethodSubscription,
   gatewayInitialize,
+  initializeGatewayTokenizationSubscription,
+  initializeTokenizationSubscription,
+  listStoredPaymentMethodSubscription,
+  processTokenizationSubscription,
   refundSub,
   transactionInitialize,
   transactionProcess,
@@ -24,6 +29,13 @@ import * as log from "log/mod.ts";
 import { GraphQLClient } from "graphql_request/mod.ts";
 import { verifyJWT } from "saleor-app-sdk/verify-jwt";
 import { transactionEventReport } from "./mutations.ts";
+import {
+  deleteStoredPaymentMethodHandler,
+  initializeTokenizationHandler,
+  initializeTokenizationSessionHandler,
+  listStoredPaymentMethodsHandler,
+  processTokenizationHandler,
+} from "./tokenization.ts";
 
 const apl = new DenoAPL();
 
@@ -227,6 +239,36 @@ const routes = [
           query: astToString(cancelSub),
           syncEvents: ["TRANSACTION_CANCELATION_REQUESTED"],
         },
+        {
+          name: "List stored payment methods",
+          targetUrl: `${URL}/list-stored-payment-methods`,
+          query: astToString(listStoredPaymentMethodSubscription),
+          syncEvents: ["LIST_STORED_PAYMENT_METHODS"],
+        },
+        {
+          name: "Delete stored payment method",
+          targetUrl: `${URL}/delete-stored-payment-method`,
+          query: astToString(deleteStoredPaymentMethodSubscription),
+          syncEvents: ["STORED_PAYMENT_METHOD_DELETE_REQUESTED"],
+        },
+        {
+          name: "Initialize tokenization",
+          targetUrl: `${URL}/initialize-tokenization`,
+          query: astToString(initializeTokenizationSubscription),
+          syncEvents: ["PAYMENT_METHOD_INITIALIZE_TOKENIZATION_SESSION"],
+        },
+        {
+          name: "Process tokenization",
+          targetUrl: `${URL}/process-tokenization`,
+          query: astToString(processTokenizationSubscription),
+          syncEvents: ["PAYMENT_METHOD_PROCESS_TOKENIZATION_SESSION"],
+        },
+        {
+          name: "Gateway initialize tokenization session",
+          targetUrl: `${URL}/initialize-tokenization-session`,
+          query: astToString(initializeGatewayTokenizationSubscription),
+          syncEvents: ["PAYMENT_GATEWAY_INITIALIZE_TOKENIZATION_SESSION"],
+        },
       ],
     } satisfies AppManifest);
   }),
@@ -341,6 +383,29 @@ const routes = [
     logger.debug("Request details", { body: req.body, headers: req.headers });
 
     return Response.OK("Accepted");
+  }),
+  POST("/list-stored-payment-methods", async (req) => {
+    const logger = log.getLogger("list-stored-payment-methods");
+
+    return await listStoredPaymentMethodsHandler(req, logger);
+  }),
+  POST("/delete-stored-payment-method", async (req) => {
+    const logger = log.getLogger("delete-stored-payment-method");
+
+    return await deleteStoredPaymentMethodHandler(req, logger);
+  }),
+  POST("/initialize-tokenization", async (req) => {
+    const logger = log.getLogger("initialize-tokenization");
+    return await initializeTokenizationHandler(req, logger);
+  }),
+  POST("/process-tokenization", async (req) => {
+    const logger = log.getLogger("process-tokenization");
+
+    return await processTokenizationHandler(req, logger);
+  }),
+  POST("/initialize-tokenization-session", async (req) => {
+    const logger = log.getLogger("initialize-tokenization-session");
+    return await initializeTokenizationSessionHandler(req, logger);
   }),
   POST("/fetch-token", async (req) => {
     const json = await req.json();

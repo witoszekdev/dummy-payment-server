@@ -223,3 +223,84 @@ export const cancelSub = gql`
     }
   }
 `;
+
+export const listStoredPaymentMethodSubscription = gql`
+  subscription {
+    event {
+      ... on ListStoredPaymentMethods {
+        user {
+          id
+        }
+        channel {
+          id
+        }
+      }
+    }
+  }
+`;
+
+export const deleteStoredPaymentMethodSubscription = gql`
+  subscription {
+    event {
+      ... on StoredPaymentMethodDeleteRequested {
+        user {
+          id
+        }
+        paymentMethodId
+        channel {
+          id
+        }
+      }
+    }
+  }
+`;
+
+export const initializeGatewayTokenizationSubscription = gql`
+  subscription {
+    event {
+      ... on PaymentGatewayInitializeTokenizationSession {
+        user {
+          id
+        }
+        channel {
+          id
+        }
+        data
+      }
+    }
+  }
+`;
+
+export const initializeTokenizationSubscription = gql`
+  subscription {
+    event {
+      ... on PaymentMethodInitializeTokenizationSession {
+        paymentFlowToSupport
+        user {
+          id
+        }
+        channel {
+          id
+        }
+        data
+      }
+    }
+  }
+`;
+
+export const processTokenizationSubscription = gql`
+  subscription {
+    event {
+      ... on PaymentMethodProcessTokenizationSession {
+        id
+        user {
+          id
+        }
+        channel {
+          id
+        }
+        data
+      }
+    }
+  }
+`;
