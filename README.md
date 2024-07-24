@@ -1,5 +1,10 @@
 # Dummy Payment Server
 
+> [!IMPORTANT]
+> This app was replaced with official [Saleor Dummy Payment App](https://github.com/saleor/dummy-payment-app).
+>
+> I recommend using the official app instead of this one. It was rewritten in Next.js, so that it matches the stack commonly used for Saleor Apps. It has a neat UI for creating orders with Transactions right in Saleor Dashboard. You can also use the UI to report changes on Transactions.
+
 Testing Saleor Transaction API without a real payment provider
 
 ## Installation
